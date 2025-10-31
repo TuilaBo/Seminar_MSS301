@@ -113,3 +113,7 @@ To test compensation logic, temporarily modify assignment-service to throw an ex
 - Lombok
 - Resilience4j (optional)
 
+
+
+
+

@@ -68,3 +68,7 @@ VALUES (99, 'demo-group', DATEADD(hour, -1, GETUTCDATE()), DATEADD(hour, 1, GETU
 
 SELECT * FROM quiz_assignment;
 
+
+
+
+

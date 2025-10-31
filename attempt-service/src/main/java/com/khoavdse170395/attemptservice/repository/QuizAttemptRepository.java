@@ -19,3 +19,7 @@ public interface QuizAttemptRepository extends JpaRepository<QuizAttempt, Long> 
     List<QuizAttempt> findByStatus(String status);
 }
 
+
+
+
+

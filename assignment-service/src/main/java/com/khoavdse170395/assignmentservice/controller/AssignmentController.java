@@ -2,8 +2,11 @@ package com.khoavdse170395.assignmentservice.controller;
 
 import com.khoavdse170395.assignmentservice.model.dto.CheckEligibilityRequest;
 import com.khoavdse170395.assignmentservice.model.dto.CheckEligibilityResponse;
+import com.khoavdse170395.assignmentservice.model.dto.CreateAssignmentRequest;
+import com.khoavdse170395.assignmentservice.model.dto.CreateAssignmentResponse;
 import com.khoavdse170395.assignmentservice.model.dto.ReleaseRequest;
 import com.khoavdse170395.assignmentservice.model.dto.ReserveRequest;
+import com.khoavdse170395.assignmentservice.model.dto.RemainingAttemptsResponse;
 import com.khoavdse170395.assignmentservice.service.AssignmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,6 +27,23 @@ import org.springframework.web.bind.annotation.*;
 public class AssignmentController {
 
     private final AssignmentService assignmentService;
+
+    @Operation(summary = "Tạo assignment", description = "Tạo quiz assignment với số lượt làm cho phép")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Tạo assignment thành công"),
+            @ApiResponse(responseCode = "400", description = "Yêu cầu không hợp lệ")
+    })
+    @PostMapping
+    public ResponseEntity<CreateAssignmentResponse> createAssignment(
+            @Valid @RequestBody CreateAssignmentRequest request) {
+
+        log.info("Received create assignment request: quizId={}, maxAttempts={}",
+                request.getQuizId(), request.getMaxAttempts());
+
+        CreateAssignmentResponse response = assignmentService.createAssignment(request);
+
+        return ResponseEntity.status(201).body(response);
+    }
 
     @Operation(summary = "Check user eligibility", description = "Check if a user is eligible to take a quiz assignment")
     @ApiResponses(value = {
@@ -80,5 +100,20 @@ public class AssignmentController {
         assignmentService.releaseAttempt(assignmentId, request.getUserId(), request.getIdempotencyKey());
         
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Xem số lượt còn lại", description = "Trả về số lần attempt còn lại cho user trên assignment")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Truy vấn thành công"),
+            @ApiResponse(responseCode = "404", description = "Assignment not found")
+    })
+    @GetMapping("/{assignmentId}/remaining")
+    public ResponseEntity<RemainingAttemptsResponse> getRemaining(
+            @Parameter(description = "Assignment ID", required = true) @PathVariable Long assignmentId,
+            @Parameter(description = "User ID", required = true) @RequestParam String userId) {
+
+        log.info("Received remaining attempts request for assignmentId: {}, userId: {}", assignmentId, userId);
+        RemainingAttemptsResponse resp = assignmentService.getRemainingAttempts(assignmentId, userId);
+        return ResponseEntity.ok(resp);
     }
 }

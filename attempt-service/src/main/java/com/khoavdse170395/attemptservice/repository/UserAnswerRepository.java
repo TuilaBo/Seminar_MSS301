@@ -31,3 +31,7 @@ public interface UserAnswerRepository extends JpaRepository<UserAnswer, Long> {
     long countTotalAnswers(@Param("attemptId") Long attemptId);
 }
 
+
+
+
+

@@ -14,3 +14,4 @@ public interface QuizAssignmentRepository extends JpaRepository<QuizAssignment, 
     Optional<QuizAssignment> findByQuizId(Long quizId);
 }
 
+
